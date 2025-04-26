@@ -1,0 +1,13 @@
+package com.ascenders.secured_api
+
+import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
+
+@SpringBootTest
+class SecuredApiApplicationTests {
+
+	@Test
+	fun contextLoads() {
+	}
+
+}

@@ -1,4 +1,4 @@
-package com.ascenders.secured_api
+package com.ascenders.securedapi
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -8,5 +8,4 @@ class SecuredApiApplication
 
 fun main(args: Array<String>) {
 	runApplication<SecuredApiApplication>(*args)
-
 }

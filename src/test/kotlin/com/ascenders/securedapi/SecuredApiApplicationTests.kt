@@ -1,4 +1,4 @@
-package com.ascenders.secured_api
+package com.ascenders.securedapi
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

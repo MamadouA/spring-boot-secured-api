@@ -21,10 +21,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 class SecurityContig {
     @Autowired
-    lateinit var jwtFilter: JwtFilter
+    private lateinit var jwtFilter: JwtFilter
 
     @Bean
     fun securityFilterChain(httpSecurity: HttpSecurity): SecurityFilterChain {
+
         return httpSecurity
             .csrf { it.disable() }
             .authorizeHttpRequests {
@@ -33,20 +34,26 @@ class SecurityContig {
             }
             .httpBasic(Customizer.withDefaults())
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)}
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
     }
 
     @Bean
     fun userDetailsService(passwordEncoder: BCryptPasswordEncoder): UserDetailsService {
 
-        val userDetails =
+        val user1 =
             User.withUsername("admin")
                 .password(passwordEncoder.encode("admin@passer123"))
                 .roles("admin")
                 .build()
 
-        return InMemoryUserDetailsManager(userDetails);
+        val user2 =
+            User.withUsername("visitor")
+                .password(passwordEncoder.encode("visitor@passer123"))
+                .roles("visitor")
+                .build()
+
+        return InMemoryUserDetailsManager(user1, user2);
     }
 
     @Bean

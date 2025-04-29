@@ -1,6 +1,7 @@
 package com.ascenders.securedapi.filter
 
 import com.ascenders.securedapi.util.JwtUtils
+import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -33,7 +34,14 @@ class JwtFilter: OncePerRequestFilter(){
         if(authorization != null && authorization.startsWith("Bearer")) {
             token = authorization.substring(7)
 
-            val username = jwtUtils.extractUsername(token)
+            var username: String? = null
+
+            try {
+                username = jwtUtils.extractUsername(token)
+            }
+            catch (e: JwtException) {
+                println(e.message) // replace with logger
+            }
 
             if (username != null && SecurityContextHolder.getContext().authentication == null) {
                 userDetails = userDetailsService.loadUserByUsername(username)

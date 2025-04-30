@@ -23,7 +23,7 @@ class JwtUtils {
     }
 
     fun generateToken(userDetails: UserDetails): String {
-        val claims: Map<String, Any> = HashMap()
+        val claims: Map<String, Any> = HashMap() // to be filled....
         return createToken(claims, userDetails.username)
     }
 

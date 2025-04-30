@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -27,6 +28,7 @@ class JwtFilter: OncePerRequestFilter(){
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse,
         filterChain: FilterChain) {
+        val logger = LoggerFactory.getLogger(this::class.java)
         lateinit var token: String;
         lateinit var userDetails: UserDetails
         val authorization = request.getHeader("Authorization")
@@ -34,28 +36,25 @@ class JwtFilter: OncePerRequestFilter(){
         if(authorization != null && authorization.startsWith("Bearer")) {
             token = authorization.substring(7)
 
-            var username: String? = null
-
             try {
-                username = jwtUtils.extractUsername(token)
+                val username = jwtUtils.extractUsername(token)
+
+                if (SecurityContextHolder.getContext().authentication == null) {
+                    userDetails = userDetailsService.loadUserByUsername(username)
+
+                    if(jwtUtils.isValidToken(token, userDetails)) {
+                        val authentication =
+                            UsernamePasswordAuthenticationToken(userDetails.username,
+                                userDetails.password, userDetails.authorities)
+
+                        authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+
+                        SecurityContextHolder.getContext().authentication = authentication
+                    }
+                }
             }
             catch (e: JwtException) {
-                println(e.message) // replace with logger
-            }
-
-            if (username != null && SecurityContextHolder.getContext().authentication == null) {
-                userDetails = userDetailsService.loadUserByUsername(username)
-
-
-                if(jwtUtils.isValidToken(token, userDetails)) {
-                    val authentication =
-                        UsernamePasswordAuthenticationToken(userDetails.username,
-                            userDetails.password, userDetails.authorities)
-
-                    authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
-
-                    SecurityContextHolder.getContext().authentication = authentication
-                }
+                logger.error("JWT exception", e)
             }
         }
 

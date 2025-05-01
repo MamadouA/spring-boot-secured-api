@@ -21,10 +21,10 @@ class JwtFilter: OncePerRequestFilter(){
 
     @Autowired
     @Lazy
-    lateinit var userDetailsService: UserDetailsService
+    private lateinit var userDetailsService: UserDetailsService
 
     @Autowired
-    lateinit var jwtUtils: JwtUtils
+    private lateinit var jwtUtils: JwtUtils
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse,
         filterChain: FilterChain) {

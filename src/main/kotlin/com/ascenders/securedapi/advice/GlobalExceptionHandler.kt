@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
 class GlobalExceptionHandler {
-    val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun httpMessageNotReadableHandler(e: HttpMessageNotReadableException): ResponseEntity<String> {

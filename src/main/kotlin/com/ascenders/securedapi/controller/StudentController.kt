@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 class StudentController {
     // -
     @Autowired
-    lateinit var studentService: StudentService
+    private lateinit var studentService: StudentService
 
     @PostMapping
     fun create(@RequestBody student: Student): Student {
